@@ -1,0 +1,91 @@
+.links-container {
+  height: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.link-card {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.link-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.link-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.link-title svg {
+  color: var(--accent-primary);
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.link-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.link-action:hover {
+  color: var(--accent-primary-hover);
+  text-decoration: underline;
+}
+
+.link-delete {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.link-delete:hover {
+  color: var(--color-danger);
+}
+
+.add-link-form {
+  background: var(--bg-surface);
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.add-link-form .form-group {
+  flex: 1;
+  min-width: 200px;
+}

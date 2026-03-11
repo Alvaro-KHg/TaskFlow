@@ -1,0 +1,71 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* Status variants */
+.badge-status--A.Fazer { background-color: rgba(82, 82, 91, 0.2); color: var(--text-secondary); border: 1px solid rgba(82, 82, 91, 0.4); }
+.badge-status--Em.Andamento { background-color: rgba(14, 165, 233, 0.15); color: var(--color-info); border: 1px solid rgba(14, 165, 233, 0.3); }
+.badge-status--Bloqueado.Aguardando { background-color: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px dashed rgba(239, 68, 68, 0.4); }
+.badge-status--Revisão { background-color: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-status--Concluído { background-color: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+/* Priority variants */
+.badge-prio--Baixa { background: var(--priority-baixa-bg); color: var(--priority-baixa-text); border: 1px solid rgba(161, 161, 170, 0.2); }
+.badge-prio--Média { background: var(--priority-media-bg); color: var(--priority-media-text); border: 1px solid rgba(96, 165, 250, 0.2); }
+.badge-prio--Alta { background: var(--priority-alta-bg); color: var(--priority-alta-text); border: 1px solid rgba(251, 191, 36, 0.2); }
+.badge-prio--Crítica { background: var(--priority-critica-bg); color: var(--priority-critica-text); border: 1px solid rgba(248, 113, 113, 0.2); }
+
+/* Task Type variants */
+.badge-type--Individual { background-color: transparent; color: var(--text-primary); border: none; padding-left: 0; padding-right: 0; }
+.badge-type--Em.Grupo { background-color: transparent; color: var(--text-primary); border: none; padding-left: 0; padding-right: 0;}
+
+/* Subject variants */
+.badge-subj--1 { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); } /* Indigo/Blue */
+.badge-subj--2 { background-color: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); } /* Pink */
+.badge-subj--3 { background-color: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); } /* Violet */
+.badge-subj--4 { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); } /* Amber */
+.badge-subj--5 { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); } /* Emerald */
+.badge-subj--6 { background-color: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); } /* Red */
+.badge-subj--0 { background-color: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.3); } /* Sky */
+
+
+/* Restante */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-fast);
+}
+
+.tag:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.avatar {
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 2px solid var(--bg-surface);
+  background-color: var(--bg-main);
+  box-shadow: var(--shadow-sm);
+  display: inline-block;
+}
+
+.avatar.sm { width: 24px; height: 24px; }
+.avatar.md { width: 32px; height: 32px; }
+.avatar.lg { width: 40px; height: 40px; }

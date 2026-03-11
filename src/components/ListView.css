@@ -1,0 +1,77 @@
+.list-container {
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg-surface-elevated);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+}
+
+.tasks-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tasks-table th, .tasks-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.tasks-table th {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  position: sticky;
+  top: 0;
+  background: var(--bg-surface-elevated);
+  z-index: 5;
+  box-shadow: 0 1px 0 var(--glass-border);
+}
+
+.tasks-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.tasks-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.cell-title {
+  color: var(--text-primary);
+  font-weight: 500;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell-subject {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.cell-date {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cell-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+  color: var(--accent-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
