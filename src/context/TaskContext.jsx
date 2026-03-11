@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
-import { INITIAL_TASKS, USERS, SUBJECTS, STATUSES, PRIORITIES, TAGS, TASK_TYPES, INITIAL_LINKS } from '../data/mockData';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
+import { USERS, SUBJECTS, STATUSES, PRIORITIES, TAGS, TASK_TYPES } from '../data/mockData';
+import { supabase } from '../lib/supabase';
 
 const TaskContext = createContext();
 
@@ -12,8 +13,26 @@ export const useTaskContext = () => {
 };
 
 export const TaskProvider = ({ children }) => {
-  const [tasks, setTasks] = useState(INITIAL_TASKS);
-  const [links, setLinks] = useState(INITIAL_LINKS);
+  const [tasks, setTasks] = useState([]);
+  const [links, setLinks] = useState([]);
+
+  // Busca dados na Nuvem
+  useEffect(() => {
+    const fetchDados = async () => {
+      try {
+        const { data: tasksData, error: tErr } = await supabase.from('tasks').select('*');
+        if (tErr) throw tErr;
+        if (tasksData) setTasks(tasksData);
+
+        const { data: linksData, error: lErr } = await supabase.from('links').select('*');
+        if (lErr) throw lErr;
+        if (linksData) setLinks(linksData);
+      } catch (err) {
+        console.error('Erro buscando Supabase:', err);
+      }
+    };
+    fetchDados();
+  }, []);
   
   // Filtros Globais
   const [filters, setFilters] = useState({
@@ -55,16 +74,28 @@ export const TaskProvider = ({ children }) => {
     });
   };
 
-  const addTask = (newTask) => {
-    setTasks(prev => [...prev, { ...newTask, id: `t${Date.now()}` }]);
+  const addTask = async (newTask) => {
+    const { id, ...dataToInsert } = newTask; // Ignora ID local
+    const { data, error } = await supabase.from('tasks').insert([dataToInsert]).select();
+    if (error) {
+      console.error(error); 
+      return;
+    }
+    if (data) setTasks(prev => [...prev, data[0]]);
   };
 
-  const updateTask = (id, updatedFields) => {
+  const updateTask = async (id, updatedFields) => {
+    // Atualização Otimista no frontend
     setTasks(prev => prev.map(task => task.id === id ? { ...task, ...updatedFields } : task));
+    const { error } = await supabase.from('tasks').update(updatedFields).eq('id', id);
+    if (error) console.error(error);
   };
 
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
+    // Atualização Otimista no frontend
     setTasks(prev => prev.filter(task => task.id !== id));
+    const { error } = await supabase.from('tasks').delete().eq('id', id);
+    if (error) console.error(error);
   };
 
   // Mover tarefa entre colunas (usado no Kanban)
@@ -73,12 +104,19 @@ export const TaskProvider = ({ children }) => {
   };
 
   // Funções para Links
-  const addLink = (newLink) => {
-    setLinks(prev => [...prev, { ...newLink, id: `l${Date.now()}` }]);
+  const addLink = async (newLink) => {
+    const { id, ...linkData } = newLink;
+    const { data, error } = await supabase.from('links').insert([linkData]).select();
+    if (error) {
+       console.error(error); return;
+    }
+    if (data) setLinks(prev => [...prev, data[0]]);
   };
 
-  const deleteLink = (id) => {
+  const deleteLink = async (id) => {
     setLinks(prev => prev.filter(link => link.id !== id));
+    const { error } = await supabase.from('links').delete().eq('id', id);
+    if (error) console.error(error);
   };
 
   const value = {
