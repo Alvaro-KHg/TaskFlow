@@ -66,19 +66,20 @@
   flex: 1;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+  grid-auto-rows: minmax(140px, max-content);
+  align-content: start; /* Impede os dias de esticarem criando buracos verticais se houverem menos semanas renderizadas */
   overflow-y: auto;
 }
 
 .calendar-day-cell {
   border-right: 1px solid var(--glass-border);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03); /* Divisória horizontal super suave */
   padding: 0.5rem;
-  min-height: 120px;
+  height: 140px; /* Altura fixa para evitar distorção */
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   background-color: var(--bg-surface-elevated);
+  overflow: hidden; /* Corta o que passar */
 }
 
 .calendar-day-cell.is-other-month {
@@ -97,20 +98,24 @@
   border-radius: var(--radius-full);
 }
 
+.calendar-day-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
 .day-number {
   font-size: 0.875rem;
   font-weight: 500;
-  align-self: flex-end;
   color: var(--text-secondary);
-  margin-bottom: 0.25rem;
 }
 
 .calendar-tasks-list {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  overflow-y: auto;
-  max-height: 100%;
+  flex: 1;
+  overflow: hidden; /* Previne a barra de rolagem desnecessária dentro da célula no novo layout */
 }
 
 .calendar-task-item {
@@ -129,6 +134,15 @@
 
 .calendar-task-item:hover {
   opacity: 0.8;
+}
+
+.calendar-task-more {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem;
+  cursor: help;
+  text-align: left;
 }
 
 /* Coloring task left border by priority/status could also go here */

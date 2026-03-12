@@ -111,6 +111,18 @@ const Header = ({ activeTab, setActiveTab, onOpenModal }) => {
 
         <select 
           className="filter-select"
+          value={filters.timeframe || ''}
+          onChange={(e) => updateFilter('timeframe', e.target.value)}
+        >
+          <option value="">Todas as Datas</option>
+          <option value="hoje">Hoje</option>
+          <option value="amanha">Amanhã</option>
+          <option value="esta_semana">Esta Semana</option>
+          <option value="atrasadas">Atrasadas</option>
+        </select>
+
+        <select 
+          className="filter-select"
           value={filters.priority}
           onChange={(e) => updateFilter('priority', e.target.value)}
         >

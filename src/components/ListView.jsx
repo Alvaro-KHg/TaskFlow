@@ -3,7 +3,7 @@ import { useTaskContext } from '../context/TaskContext';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Badge, Avatar } from './UI';
-import { Edit2 } from 'lucide-react';
+import { Edit2, CheckCircle2 } from 'lucide-react';
 import './ListView.css';
 
 const ListView = ({ onEditTask }) => {
@@ -31,9 +31,12 @@ const ListView = ({ onEditTask }) => {
             const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'Concluído';
 
             return (
-              <tr key={task.id}>
+              <tr key={task.id} style={{ opacity: task.status === 'Concluído' ? 0.7 : 1 }}>
                 <td className="cell-title">
-                  <div style={{marginBottom: '0.5rem'}}>{task.title}</div>
+                  <div style={{marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: task.status === 'Concluído' ? 'line-through' : 'none'}}>
+                    {task.status === 'Concluído' && <CheckCircle2 size={16} color="var(--color-success)" />}
+                    {task.title}
+                  </div>
                   <Badge variant="type" value={task.taskType || 'Individual'} />
                 </td>
                 <td className="cell-subject">

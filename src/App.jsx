@@ -7,6 +7,7 @@ import ListView from './components/ListView';
 import CalendarView from './components/CalendarView';
 import DashboardView from './components/DashboardView';
 import LinksView from './components/LinksView';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const [activeTab, setActiveTab] = useState('kanban');
@@ -51,6 +52,19 @@ function App() {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         taskToEdit={taskToEdit} 
+      />
+
+      {/* Container Global de Notificações Toast */}
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: 'var(--bg-surface-elevated)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--glass-border)',
+          },
+          success: { iconTheme: { primary: 'var(--color-success)', secondary: '#fff' } }
+        }}
       />
     </div>
   );

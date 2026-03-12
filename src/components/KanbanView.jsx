@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTaskContext } from '../context/TaskContext';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Clock, Edit2 } from 'lucide-react';
+import { Clock, Edit2, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Badge, Tag, Avatar } from './UI';
@@ -29,7 +29,10 @@ const KanbanCard = ({ task, onEdit, index }) => {
               <Badge variant="type" value={task.taskType || 'Individual'} />
             </div>
           </div>
-          <h4 className="card-title">{task.title}</h4>
+          <h4 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: task.status === 'Concluído' ? 'var(--text-secondary)' : 'var(--text-primary)', textDecoration: task.status === 'Concluído' ? 'line-through' : 'none' }}>
+            {task.status === 'Concluído' && <CheckCircle2 size={16} color="var(--color-success)" />}
+            {task.title}
+          </h4>
           <div className="card-subject" style={{marginTop: '0.5rem'}}>
             <Badge variant="subject" value={task.subject} subjectIndex={subjectIndex} />
           </div>

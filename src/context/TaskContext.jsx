@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { USERS, SUBJECTS, STATUSES, PRIORITIES, TAGS, TASK_TYPES } from '../data/mockData';
 import { supabase } from '../lib/supabase';
+import toast from 'react-hot-toast';
+import { isToday, isTomorrow, isThisWeek, isBefore, startOfDay } from 'date-fns';
 
 const TaskContext = createContext();
 
@@ -40,6 +42,7 @@ export const TaskProvider = ({ children }) => {
     subject: '',
     status: '',
     priority: '',
+    timeframe: '',
     search: ''
   });
 
@@ -55,9 +58,32 @@ export const TaskProvider = ({ children }) => {
           task.description.toLowerCase().includes(filters.search.toLowerCase())
         : true;
 
-      return matchAssignee && matchSubject && matchStatus && matchPriority && matchSearch;
+      // Filtro de Data Pre-definido
+      let matchTimeframe = true;
+      if (filters.timeframe && task.dueDate) {
+        const tDate = new Date(task.dueDate);
+        const todayStart = startOfDay(new Date());
+        
+        if (filters.timeframe === 'hoje') matchTimeframe = isToday(tDate);
+        else if (filters.timeframe === 'amanha') matchTimeframe = isTomorrow(tDate);
+        else if (filters.timeframe === 'esta_semana') matchTimeframe = isThisWeek(tDate, { weekStartsOn: 0 });
+        else if (filters.timeframe === 'atrasadas') matchTimeframe = isBefore(tDate, todayStart) && task.status !== 'Concluído';
+      }
+
+      return matchAssignee && matchSubject && matchStatus && matchPriority && matchSearch && matchTimeframe;
     });
   }, [tasks, filters]);
+
+  // Derived state: Dynamic Subjects & Tags based on DB content
+  const dynamicSubjects = useMemo(() => {
+    const dbSubjects = tasks.map(t => t.subject).filter(s => s && s.trim() !== '' && s !== 'mode');
+    return Array.from(new Set([...SUBJECTS, ...dbSubjects]));
+  }, [tasks]);
+
+  const dynamicTags = useMemo(() => {
+    const dbTags = tasks.flatMap(t => t.tags || []).filter(t => t && t.trim() !== '' && t !== 'mode');
+    return Array.from(new Set([...TAGS, ...dbTags]));
+  }, [tasks]);
 
   // Actions
   const updateFilter = (key, value) => {
@@ -70,6 +96,7 @@ export const TaskProvider = ({ children }) => {
       subject: '',
       status: '',
       priority: '',
+      timeframe: '',
       search: ''
     });
   };
@@ -79,23 +106,37 @@ export const TaskProvider = ({ children }) => {
     const { data, error } = await supabase.from('tasks').insert([dataToInsert]).select();
     if (error) {
       console.error(error); 
+      toast.error('Erro ao adicionar tarefa.');
       return;
     }
-    if (data) setTasks(prev => [...prev, data[0]]);
+    if (data) {
+      setTasks(prev => [...prev, data[0]]);
+      toast.success('Tarefa criada com sucesso!');
+    }
   };
 
   const updateTask = async (id, updatedFields) => {
     // Atualização Otimista no frontend
     setTasks(prev => prev.map(task => task.id === id ? { ...task, ...updatedFields } : task));
     const { error } = await supabase.from('tasks').update(updatedFields).eq('id', id);
-    if (error) console.error(error);
+    if (error) {
+      console.error(error);
+      toast.error('Ocorreu um erro ao atualizar.');
+    } else {
+      toast.success('Alterações salvas!');
+    }
   };
 
   const deleteTask = async (id) => {
     // Atualização Otimista no frontend
     setTasks(prev => prev.filter(task => task.id !== id));
     const { error } = await supabase.from('tasks').delete().eq('id', id);
-    if (error) console.error(error);
+    if (error) {
+      console.error(error);
+      toast.error('Falha ao excluir.');
+    } else {
+      toast.success('Tarefa removida.', { icon: '🗑️' });
+    }
   };
 
   // Mover tarefa entre colunas (usado no Kanban)
@@ -108,15 +149,25 @@ export const TaskProvider = ({ children }) => {
     const { id, ...linkData } = newLink;
     const { data, error } = await supabase.from('links').insert([linkData]).select();
     if (error) {
-       console.error(error); return;
+       console.error(error); 
+       toast.error('Erro ao adicionar Link.');
+       return;
     }
-    if (data) setLinks(prev => [...prev, data[0]]);
+    if (data) {
+      setLinks(prev => [...prev, data[0]]);
+      toast.success('Link fixado no mural!');
+    }
   };
 
   const deleteLink = async (id) => {
     setLinks(prev => prev.filter(link => link.id !== id));
     const { error } = await supabase.from('links').delete().eq('id', id);
-    if (error) console.error(error);
+    if (error) {
+      console.error(error);
+      toast.error('Erro ao excluir link.');
+    } else {
+      toast.success('Link deletado.', { icon: '🗑️' });
+    }
   };
 
   const value = {
@@ -132,13 +183,13 @@ export const TaskProvider = ({ children }) => {
     links,
     addLink,
     deleteLink,
-    // Estático
+    // Estático e Dinâmico
     users: USERS,
-    subjects: SUBJECTS,
+    subjects: dynamicSubjects,
     statuses: STATUSES,
     priorities: PRIORITIES,
     taskTypes: TASK_TYPES,
-    tags: TAGS
+    tags: dynamicTags
   };
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
