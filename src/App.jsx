@@ -7,12 +7,28 @@ import ListView from './components/ListView';
 import CalendarView from './components/CalendarView';
 import DashboardView from './components/DashboardView';
 import LinksView from './components/LinksView';
+import LoginScreen from './components/LoginScreen';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
+  const [loggedInUser, setLoggedInUser] = useState(() => localStorage.getItem('taskflow_user') || null);
   const [activeTab, setActiveTab] = useState('kanban');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
+
+  const handleLogin = (userId) => {
+    setLoggedInUser(userId);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('taskflow_user');
+    setLoggedInUser(null);
+  };
+
+  // Se não está logado, mostra a tela de Login
+  if (!loggedInUser) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
 
   const openNewTaskModal = () => {
     setTaskToEdit(null);
