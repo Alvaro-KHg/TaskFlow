@@ -2,8 +2,8 @@ import { addDays, subDays } from 'date-fns';
 
 export const USERS = [
   { id: 'u1', name: 'Alvaro', avatar: '/avatars/red.png' }, // Ranger Vermelho
-  { id: 'u2', name: 'Bruno', avatar: '/avatars/blue.png' }, // Ranger Azul
-  { id: 'u3', name: 'Fernando', avatar: '/avatars/green.png' }, // Ranger Verde
+  { id: 'u2', name: 'Bruno', avatar: '/avatars/green.png' }, // Ranger Verde
+  { id: 'u3', name: 'Fernando', avatar: '/avatars/blue.png' }, // Ranger Azul
   { id: 'u4', name: 'Kaique', avatar: '/avatars/black.png' }, // Ranger Preto
   { id: 'u5', name: 'Borges', avatar: '/avatars/yellow.png' }, // Ranger Amarelo
   { id: 'u6', name: 'Rafaela', avatar: '/avatars/pink.png' }, // Ranger Rosa

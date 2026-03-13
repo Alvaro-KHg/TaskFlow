@@ -7,7 +7,7 @@ import { Avatar } from './UI';
 import './TaskModal.css';
 
 const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
-  const { addTask, updateTask, users, subjects, statuses, priorities, taskTypes, tags } = useTaskContext();
+  const { addTask, updateTask, deleteTask, users, subjects, statuses, priorities, taskTypes, tags } = useTaskContext();
 
   const initialFormState = {
     title: '',
@@ -109,6 +109,14 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
       }]
     }));
     setNewComment('');
+  };
+
+  const handleDelete = () => {
+    if (!taskToEdit) return;
+    const confirmDelete = window.confirm('Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.');
+    if (!confirmDelete) return;
+    deleteTask(taskToEdit.id);
+    onClose();
   };
 
   const handleSubmit = (e) => {
@@ -298,11 +306,19 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn-secondary" onClick={handleClose}>Cancelar</button>
-            <button type="submit" className="btn-primary">
-              <Save size={18} />
-              Salvar Tarefa
-            </button>
+            {taskToEdit && (
+              <button type="button" className="btn-danger" onClick={handleDelete}>
+                <Trash2 size={18} />
+                Excluir
+              </button>
+            )}
+            <div className="modal-footer-actions">
+              <button type="button" className="btn-secondary" onClick={handleClose}>Cancelar</button>
+              <button type="submit" className="btn-primary">
+                <Save size={18} />
+                Salvar Tarefa
+              </button>
+            </div>
           </div>
         </form>
       </div>
