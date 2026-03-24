@@ -2,9 +2,7 @@ import React, { useMemo } from 'react';
 import { useTaskContext } from '../context/TaskContext';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 import { Doughnut, Bar } from 'react-chartjs-2';
-import { PieChart, Clock, Download, List as ListIcon, BarChart3 } from 'lucide-react';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import { PieChart, Clock, List as ListIcon, BarChart3 } from 'lucide-react';
 import './DashboardView.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
@@ -20,18 +18,27 @@ const DashboardView = () => {
 
     filteredTasks.forEach(t => {
       const hours = Number(t.hoursSpent) || 0;
-      if (t.assigneeId && hours > 0) {
+      if (t.assigneeId && t.status === 'Concluído') {
         hoursByUser[t.assigneeId] += hours;
         totalHoursCount += hours;
       }
     });
 
-    const labels = users.map(u => {
+    const sortedUsers = [...users].sort((a, b) => {
+      const hoursA = hoursByUser[a.id];
+      const hoursB = hoursByUser[b.id];
+      if (hoursB !== hoursA) {
+        return hoursB - hoursA;
+      }
+      return a.name.localeCompare(b.name);
+    });
+
+    const labels = sortedUsers.map(u => {
       const hours = hoursByUser[u.id];
       const perc = totalHoursCount > 0 ? Math.round((hours / totalHoursCount) * 100) : 0;
       return `${u.name.split(' ')[0]} (${perc}%)`;
     });
-    const data = users.map(u => hoursByUser[u.id]);
+    const data = sortedUsers.map(u => hoursByUser[u.id]);
     
     // Paleta premium
     const bgColors = [
@@ -57,7 +64,7 @@ const DashboardView = () => {
     
     filteredTasks.forEach(t => {
       const hours = Number(t.hoursSpent) || 0;
-      if (t.assigneeId && t.status !== 'A Fazer') {
+      if (t.assigneeId && t.status === 'Concluído') {
         hoursByUser[t.assigneeId] += hours; // Sum of Estimate
       }
     });
@@ -96,6 +103,26 @@ const DashboardView = () => {
       tooltip: { theme: 'dark' }
     },
   };
+
+  const barPlugins = [{
+    id: 'displayValuesInsideBars',
+    afterDatasetsDraw(chart) {
+      const { ctx, data } = chart;
+      ctx.save();
+      ctx.font = 'bold 12px "Inter", sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      
+      chart.getDatasetMeta(0).data.forEach((bar, index) => {
+        const value = data.datasets[0].data[index];
+        if (value > 0) {
+          ctx.fillText(value + 'h', bar.x, bar.y + 8);
+        }
+      });
+      ctx.restore();
+    }
+  }];
 
   const barOptions = {
     responsive: true,
@@ -151,34 +178,45 @@ const DashboardView = () => {
   const totalCompleted = filteredTasks.filter(t => t.status === 'Concluído').length;
   const totalHours = filteredTasks.reduce((acc, curr) => acc + (Number(curr.hoursSpent) || 0), 0);
 
-  const handleExportPDF = async () => {
-    const dashboardElement = document.getElementById('dashboard-report-content');
-    if (!dashboardElement) return;
-
-    try {
-      const canvas = await html2canvas(dashboardElement, { scale: 2, useCORS: true, backgroundColor: '#0f172a' }); // Using a dark background color default
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('TaskFlow_Report.pdf');
-    } catch (err) {
-      console.error('Erro ao gerar PDF', err);
-    }
-  };
+  const { filters } = useTaskContext();
+  const pdfPeriod = useMemo(() => {
+    if (filteredTasks.length === 0) return 'N/A';
+    const dates = filteredTasks.map(t => new Date(t.dueDate)).filter(d => !isNaN(d.getTime()));
+    if (dates.length === 0) return 'N/A';
+    const minDate = new Date(Math.min(...dates));
+    const maxDate = new Date(Math.max(...dates));
+    const fmt = (d) => d.toLocaleDateString('pt-BR');
+    return `${fmt(minDate)} a ${fmt(maxDate)}`;
+  }, [filteredTasks]);
 
   return (
     <div className="dashboard-container animate-fade-in">
-      <div className="dashboard-actions-header" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', gridColumn: '1 / -1' }}>
-        <button className="btn-primary" onClick={handleExportPDF}>
-          <Download size={18} />
-          Exportar PDF
-        </button>
-      </div>
-      
       <div id="dashboard-report-content" className="dashboard-report-wrapper" style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
+        
+        {/* PDF Export Header (Hidden by default) */}
+        <div id="pdf-export-header" style={{ display: 'none', gridColumn: '1 / -1', backgroundColor: 'var(--bg-surface-elevated)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {/* Logo do Visiagro (O usuário deve colocar a imagem na pasta public como visiagro-logo.png) */}
+              <img src="/visiagro-logo.png" alt="Visiagro" style={{ height: '40px', objectFit: 'contain' }} />
+              
+              {/* Divisória sutil */}
+              <div style={{ width: '1px', height: '35px', backgroundColor: '#334155' }}></div>
+              
+              {/* Texto com a cor #d0f62e */}
+              <div style={{ fontSize: '1.25rem', fontWeight: '600', color: '#d0f62e' }}>Projeto Visiagro</div>
+            </div>
+            <div style={{ textAlign: 'right', fontSize: '0.875rem' }}>
+              <div style={{ color: 'var(--text-secondary)' }}>Professor Orientador:</div>
+              <div style={{ fontWeight: '500' }}>Jefferson dos Santos Vorpagel</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+            <div><span style={{ color: 'var(--text-secondary)' }}>Sprint:</span> <strong style={{ color: 'var(--text-primary)' }}>{filters.tag?.includes('Sprint') ? filters.tag : (filters.tag || 'Geral/Todas')}</strong></div>
+            <div><span style={{ color: 'var(--text-secondary)' }}>Período:</span> <strong style={{ color: 'var(--text-primary)' }}>{pdfPeriod}</strong></div>
+          </div>
+        </div>
+
         {/* Mini KPIs */}
         <div className="dash-panel" style={{ gridColumn: 'span 12', flexDirection: 'row', gap: '2rem', padding: '1rem 1.5rem', justifyContent: 'space-around' }}>
           <div style={{ textAlign: 'center' }}>
@@ -215,7 +253,7 @@ const DashboardView = () => {
           Contribuição de Cada Integrante (em horas)
         </h3>
         <div className="chart-container" style={{height: '300px'}}>
-           <Bar data={contributionData} options={barOptions} />
+           <Bar data={contributionData} options={barOptions} plugins={barPlugins} />
         </div>
       </div>
 

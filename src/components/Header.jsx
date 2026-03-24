@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTaskContext } from '../context/TaskContext';
-import { LayoutDashboard, List, Calendar, KanbanSquare, Search, FilterX, CheckCircle2, Plus, Link as LinkIcon } from 'lucide-react';
+import { LayoutDashboard, List, Calendar, KanbanSquare, Search, FilterX, CheckCircle2, Plus, Link as LinkIcon, Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import './Header.css';
 
 const Header = ({ activeTab, setActiveTab, onOpenModal }) => {
@@ -58,10 +60,43 @@ const Header = ({ activeTab, setActiveTab, onOpenModal }) => {
           </button>
         </div>
 
-        <button className="btn-primary" onClick={onOpenModal}>
-          <Plus size={18} />
-          Nova Tarefa
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          {activeTab === 'dashboard' && (
+            <button 
+              className="btn-secondary" 
+              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', backgroundColor: 'var(--bg-surface-elevated)' }}
+              onClick={async () => {
+                const dashboardElement = document.getElementById('dashboard-report-content');
+                if (!dashboardElement) return;
+                
+                const pdfHeader = document.getElementById('pdf-export-header');
+                if (pdfHeader) pdfHeader.style.display = 'block';
+
+                try {
+                  const canvas = await html2canvas(dashboardElement, { scale: 2, useCORS: true, backgroundColor: '#0f172a' }); 
+                  const imgData = canvas.toDataURL('image/png');
+                  const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape might be better for 12-col grid, let's keep A4 landscape or adjust scale
+                  const pdfWidth = pdf.internal.pageSize.getWidth();
+                  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                  
+                  pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                  pdf.save('TaskFlow_Report.pdf');
+                } catch (err) {
+                  console.error('Erro ao gerar PDF', err);
+                } finally {
+                  if (pdfHeader) pdfHeader.style.display = 'none';
+                }
+              }}
+            >
+              <Download size={18} />
+              Exportar PDF
+            </button>
+          )}
+          <button className="btn-primary" onClick={onOpenModal}>
+            <Plus size={18} />
+            Nova Tarefa
+          </button>
+        </div>
       </div>
 
       <div className="filters-bar">
