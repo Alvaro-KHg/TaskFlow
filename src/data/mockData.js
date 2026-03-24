@@ -25,7 +25,7 @@ export const PRIORITIES = ['Baixa', 'Média', 'Alta', 'Crítica'];
 
 export const TASK_TYPES = ['Individual', 'Em Grupo'];
 
-export const TAGS = ['Trabalho Final', 'Lista de Exercícios', 'Pesquisa', 'Apresentação', 'Projeto Prático', 'Leitura'];
+export const TAGS = ['Trabalho Final', 'Lista de Exercícios', 'Pesquisa', 'Apresentação', 'Projeto Prático', 'Leitura', 'Sprint1', 'Sprint2', 'Sprint3', 'Sprint4', 'Sprint5', 'Sprint6', 'Sprint7', 'Sprint8'];
 
 const now = new Date();
 

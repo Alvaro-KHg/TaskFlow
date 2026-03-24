@@ -80,12 +80,16 @@ const KanbanView = ({ onEditTask }) => {
       <DragDropContext onDragEnd={handleDragEnd}>
         {statuses.map(status => {
           const columnTasks = filteredTasks.filter(t => t.status === status);
+          const columnHours = columnTasks.reduce((acc, curr) => acc + (Number(curr.hoursSpent) || 0), 0);
 
           return (
             <div key={status} className="kanban-column">
               <div className="kanban-column-header">
                 {status}
-                <span className="column-count">{columnTasks.length}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  {columnHours > 0 && <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{columnHours}h</span>}
+                  <span className="column-count">{columnTasks.length}</span>
+                </div>
               </div>
 
               <Droppable droppableId={status}>

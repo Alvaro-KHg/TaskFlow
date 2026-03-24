@@ -4,13 +4,13 @@ import { LayoutDashboard, List, Calendar, KanbanSquare, Search, FilterX, CheckCi
 import './Header.css';
 
 const Header = ({ activeTab, setActiveTab, onOpenModal }) => {
-  const { filters, updateFilter, clearFilters, users, subjects, statuses, priorities } = useTaskContext();
+  const { filters, updateFilter, clearFilters, users, subjects, statuses, priorities, tags } = useTaskContext();
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const hasActiveFilters = filters.assignee || filters.subject || filters.status || filters.priority || filters.search;
+  const hasActiveFilters = filters.assignee || filters.subject || filters.status || filters.priority || filters.search || filters.tag;
 
   return (
     <header className="header">
@@ -129,6 +129,17 @@ const Header = ({ activeTab, setActiveTab, onOpenModal }) => {
           <option value="">Todas as Prioridades</option>
           {priorities.map(p => (
             <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+
+        <select 
+          className="filter-select"
+          value={filters.tag || ''}
+          onChange={(e) => updateFilter('tag', e.target.value)}
+        >
+          <option value="">Todas as Tags</option>
+          {tags.map(t => (
+            <option key={t} value={t}>{t}</option>
           ))}
         </select>
 

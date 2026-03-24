@@ -71,3 +71,8 @@
     grid-template-columns: 1fr;
   }
 }
+@media (max-width: 1200px) {
+  #dashboard-report-content > .dash-panel {
+    grid-column: span 12 !important;
+  }
+}

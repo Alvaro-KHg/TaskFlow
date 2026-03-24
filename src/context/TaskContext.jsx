@@ -43,7 +43,8 @@ export const TaskProvider = ({ children }) => {
     status: '',
     priority: '',
     timeframe: '',
-    search: ''
+    search: '',
+    tag: ''
   });
 
   // Derived state: tarefas filtradas
@@ -70,7 +71,9 @@ export const TaskProvider = ({ children }) => {
         else if (filters.timeframe === 'atrasadas') matchTimeframe = isBefore(tDate, todayStart) && task.status !== 'Concluído';
       }
 
-      return matchAssignee && matchSubject && matchStatus && matchPriority && matchSearch && matchTimeframe;
+      const matchTag = filters.tag ? (task.tags && task.tags.includes(filters.tag)) : true;
+
+      return matchAssignee && matchSubject && matchStatus && matchPriority && matchSearch && matchTimeframe && matchTag;
     });
   }, [tasks, filters]);
 
@@ -97,7 +100,8 @@ export const TaskProvider = ({ children }) => {
       status: '',
       priority: '',
       timeframe: '',
-      search: ''
+      search: '',
+      tag: ''
     });
   };
 
