@@ -28,7 +28,7 @@ const ListView = ({ onEditTask }) => {
         <tbody>
           {filteredTasks.map(task => {
             const assignee = getAssignee(task.assigneeId);
-            const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'Concluído';
+            const isOverdue = task.dueDate ? new Date(task.dueDate) < new Date() && task.status !== 'Concluído' : false;
 
             return (
               <tr key={task.id} style={{ opacity: task.status === 'Concluído' ? 0.7 : 1 }}>
@@ -51,11 +51,12 @@ const ListView = ({ onEditTask }) => {
                       </span>
                     </div>
                   )}
+                  {!assignee && <span style={{ color: 'var(--text-muted)' }}>-</span>}
                 </td>
                 <td><Badge variant="status" value={task.status} /></td>
                 <td><Badge variant="priority" value={task.priority} /></td>
                 <td className="cell-date" style={{ color: isOverdue ? 'var(--color-danger)' : '', textTransform: 'capitalize' }}>
-                  {format(new Date(task.dueDate), "EEE, dd MMM - HH:mm", { locale: ptBR })}
+                  {task.dueDate ? format(new Date(task.dueDate), "EEE, dd MMM - HH:mm", { locale: ptBR }) : '-'}
                 </td>
                 <td className="cell-actions">
                   <button className="btn-icon" onClick={() => onEditTask(task)} title="Editar Tarefa">

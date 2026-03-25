@@ -13,9 +13,9 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
     title: '',
     description: '',
     subject: subjects[0] || '',
-    dueDate: new Date().toISOString().slice(0, 16),
-    assigneeId: users[0]?.id || '',
-    status: statuses[0] || 'A Fazer',
+    dueDate: statuses[0] === 'Backlog' ? '' : new Date().toISOString().slice(0, 16),
+    assigneeId: statuses[0] === 'Backlog' ? '' : (users[0]?.id || ''),
+    status: statuses[0] || 'Backlog',
     priority: priorities[0] || 'Média',
     taskType: taskTypes[0] || 'Individual',
     tags: [],
@@ -160,14 +160,15 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
               </div>
               <div className="form-group">
                 <label className="form-label">Data de Entrega</label>
-                <input required type="datetime-local" className="form-input" name="dueDate" value={formData.dueDate} onChange={handleChange} />
+                <input required={formData.status !== 'Backlog'} type="datetime-local" className="form-input" name="dueDate" value={formData.dueDate || ''} onChange={handleChange} />
               </div>
             </div>
 
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Responsável</label>
-                <select className="form-select" name="assigneeId" value={formData.assigneeId} onChange={handleChange}>
+                <select required={formData.status !== 'Backlog'} className="form-select" name="assigneeId" value={formData.assigneeId || ''} onChange={handleChange}>
+                  <option value="">Não atribuído</option>
                   {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                 </select>
               </div>

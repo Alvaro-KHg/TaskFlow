@@ -19,7 +19,7 @@ export const SUBJECTS = [
   'Artigo Revista'
 ];
 
-export const STATUSES = ['A Fazer', 'Em Andamento', 'Bloqueado/Aguardando', 'Revisão', 'Concluído'];
+export const STATUSES = ['Backlog', 'A Fazer', 'Em Andamento', 'Bloqueado/Aguardando', 'Revisão', 'Concluído'];
 
 export const PRIORITIES = ['Baixa', 'Média', 'Alta', 'Crítica'];
 

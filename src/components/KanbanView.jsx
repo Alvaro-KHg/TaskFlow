@@ -10,7 +10,7 @@ import './KanbanView.css';
 const KanbanCard = ({ task, onEdit, index }) => {
   const { users, subjects } = useTaskContext();
   const assignee = users.find(u => u.id === task.assigneeId);
-  const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'Concluído';
+  const isOverdue = task.dueDate ? new Date(task.dueDate) < new Date() && task.status !== 'Concluído' : false;
   const subjectIndex = subjects.indexOf(task.subject);
 
   return (
@@ -44,10 +44,12 @@ const KanbanCard = ({ task, onEdit, index }) => {
           )}
 
           <div className="card-footer" style={{flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem'}}>
-            <div className="card-meta-info" style={{ color: isOverdue ? 'var(--color-danger)' : '' }}>
-              <Clock size={14} />
-              <span style={{textTransform: 'capitalize'}}>{format(new Date(task.dueDate), "EEE, dd MMM", { locale: ptBR })}</span>
-            </div>
+            {task.dueDate && (
+              <div className="card-meta-info" style={{ color: isOverdue ? 'var(--color-danger)' : '' }}>
+                <Clock size={14} />
+                <span style={{textTransform: 'capitalize'}}>{format(new Date(task.dueDate), "EEE, dd MMM", { locale: ptBR })}</span>
+              </div>
+            )}
             {assignee && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Avatar src={assignee.avatar} alt={assignee.name} size="sm" tooltip={assignee.name} />
