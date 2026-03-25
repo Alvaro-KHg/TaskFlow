@@ -303,7 +303,7 @@ const DashboardView = () => {
           <ListIcon size={20} className="highlight" style={{color: 'var(--color-success)'}} />
           Lista de Tarefas
         </h3>
-        <div style={{ overflowX: 'auto', maxHeight: '500px', overflowY: 'auto' }}>
+        <div id="task-list-container" style={{ overflowX: 'auto', maxHeight: '500px', overflowY: 'auto' }}>
           <table className="hours-table" style={{width: '100%'}}>
             <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-surface-elevated)', zIndex: 1 }}>
               <tr>

@@ -72,12 +72,30 @@ const Header = ({ activeTab, setActiveTab, onOpenModal }) => {
                 const pdfHeader = document.getElementById('pdf-export-header');
                 if (pdfHeader) pdfHeader.style.display = 'block';
 
+                const taskListContainer = document.getElementById('task-list-container');
+                let originalMaxHeight = '';
+                let originalOverflowY = '';
+                if (taskListContainer) {
+                  originalMaxHeight = taskListContainer.style.maxHeight;
+                  originalOverflowY = taskListContainer.style.overflowY;
+                  taskListContainer.style.maxHeight = 'none';
+                  taskListContainer.style.overflowY = 'visible';
+                }
+
                 try {
                   const canvas = await html2canvas(dashboardElement, { scale: 2, useCORS: true, backgroundColor: '#0f172a' }); 
                   const imgData = canvas.toDataURL('image/png');
-                  const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape might be better for 12-col grid, let's keep A4 landscape or adjust scale
-                  const pdfWidth = pdf.internal.pageSize.getWidth();
+                  
+                  // Calculate the PDF dimensions: we want to keep the A4 landscape width (297mm) 
+                  // and scale the height accordingly, so everything fits on a single, continuous page.
+                  const pdfWidth = 297; 
                   const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                  
+                  const pdf = new jsPDF({
+                    orientation: pdfWidth > pdfHeight ? 'l' : 'p',
+                    unit: 'mm',
+                    format: [pdfWidth, pdfHeight]
+                  });
                   
                   pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                   pdf.save('TaskFlow_Report.pdf');
@@ -85,6 +103,10 @@ const Header = ({ activeTab, setActiveTab, onOpenModal }) => {
                   console.error('Erro ao gerar PDF', err);
                 } finally {
                   if (pdfHeader) pdfHeader.style.display = 'none';
+                  if (taskListContainer) {
+                    taskListContainer.style.maxHeight = originalMaxHeight;
+                    taskListContainer.style.overflowY = originalOverflowY;
+                  }
                 }
               }}
             >
