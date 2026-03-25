@@ -38,7 +38,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
       const data = {
         ...initialFormState,
         ...taskToEdit,
-        dueDate: new Date(taskToEdit.dueDate).toISOString().slice(0, 16),
+        dueDate: taskToEdit.dueDate ? new Date(taskToEdit.dueDate).toISOString().slice(0, 16) : '',
         checklist: taskToEdit.checklist || [],
         comments: taskToEdit.comments || []
       };
