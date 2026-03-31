@@ -13,7 +13,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
     title: '',
     description: '',
     subject: subjects[0] || '',
-    dueDate: statuses[0] === 'Backlog' ? '' : new Date().toISOString().slice(0, 16),
+    dueDate: statuses[0] === 'Backlog' ? '' : format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     assigneeId: statuses[0] === 'Backlog' ? '' : (users[0]?.id || ''),
     status: statuses[0] || 'Backlog',
     priority: priorities[0] || 'Média',
@@ -39,7 +39,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
       const data = {
         ...initialFormState,
         ...taskToEdit,
-        dueDate: taskToEdit.dueDate ? new Date(taskToEdit.dueDate).toISOString().slice(0, 16) : '',
+        dueDate: taskToEdit.dueDate ? format(new Date(taskToEdit.dueDate), "yyyy-MM-dd'T'HH:mm") : '',
         checklist: taskToEdit.checklist || [],
         comments: taskToEdit.comments || []
       };
@@ -122,10 +122,17 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const payload = { ...formData };
+    if (payload.dueDate) {
+      // Converte a string sem timezone (local do input) para ISO (UTC) absoluto para o Supabase
+      payload.dueDate = new Date(payload.dueDate).toISOString();
+    }
+
     if (taskToEdit) {
-      updateTask(taskToEdit.id, formData);
+      updateTask(taskToEdit.id, payload);
     } else {
-      addTask(formData);
+      addTask(payload);
     }
     onClose();
   };
