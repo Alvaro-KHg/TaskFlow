@@ -37,11 +37,14 @@ const KanbanCard = ({ task, onEdit, index }) => {
             <Badge variant="subject" value={task.subject} subjectIndex={subjectIndex} />
           </div>
 
-          {task.tags && task.tags.length > 0 && (
-            <div className="card-tags">
-              {task.tags.map(t => <Tag key={t} text={t} />)}
-            </div>
-          )}
+          <div className="card-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+            {Number(task.hoursSpent) > 0 && (
+              <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--accent-primary)', display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(59, 130, 246, 0.15)', padding: '2px 6px', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                <Clock size={10} /> {task.hoursSpent}h
+              </span>
+            )}
+            {task.tags?.map(t => <Tag key={t} text={t} />)}
+          </div>
 
           <div className="card-footer" style={{flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem'}}>
             {task.dueDate && (

@@ -7,7 +7,7 @@ import { Edit2, CheckCircle2 } from 'lucide-react';
 import './ListView.css';
 
 const ListView = ({ onEditTask }) => {
-  const { filteredTasks, users, subjects } = useTaskContext();
+  const { filteredTasks, users, subjects, updateTask } = useTaskContext();
 
   const getAssignee = (id) => users.find(u => u.id === id);
 
@@ -19,6 +19,7 @@ const ListView = ({ onEditTask }) => {
             <th>Título</th>
             <th>Matéria</th>
             <th>Responsável</th>
+            <th>Estimativa</th>
             <th>Status</th>
             <th>Prioridade</th>
             <th>Entrega</th>
@@ -43,15 +44,28 @@ const ListView = ({ onEditTask }) => {
                   <Badge variant="subject" value={task.subject} subjectIndex={subjects.indexOf(task.subject)} />
                 </td>
                 <td>
-                  {assignee && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Avatar src={assignee.avatar} alt={assignee.name} size="sm" />
-                      <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                        {assignee.name.split(' ')[0]}
-                      </span>
-                    </div>
-                  )}
-                  {!assignee && <span style={{ color: 'var(--text-muted)' }}>-</span>}
+                  <select 
+                    value={task.assigneeId || ''} 
+                    onChange={(e) => updateTask(task.id, { assigneeId: e.target.value })}
+                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--glass-border)', color: 'inherit', outline: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.875rem' }}
+                  >
+                    <option value="" style={{ color: 'var(--text-primary)', background: 'var(--bg-surface)' }}>-</option>
+                    {users.map(u => <option key={u.id} value={u.id} style={{ color: 'var(--text-primary)', background: 'var(--bg-surface)' }}>{u.name.split(' ')[0]}</option>)}
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    defaultValue={task.hoursSpent || 0}
+                    onBlur={(e) => {
+                      if (e.target.value !== String(task.hoursSpent)) {
+                        updateTask(task.id, { hoursSpent: e.target.value });
+                      }
+                    }}
+                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--glass-border)', color: 'inherit', outline: 'none', width: '60px', padding: '4px 8px', borderRadius: '4px', textAlign: 'center', fontSize: '0.875rem' }}
+                    min="0" step="0.5"
+                  />
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginLeft: '4px' }}>h</span>
                 </td>
                 <td><Badge variant="status" value={task.status} /></td>
                 <td><Badge variant="priority" value={task.priority} /></td>

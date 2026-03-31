@@ -177,6 +177,8 @@ const DashboardView = () => {
   const totalTasks = filteredTasks.length;
   const totalCompleted = filteredTasks.filter(t => t.status === 'Concluído').length;
   const totalHours = filteredTasks.reduce((acc, curr) => acc + (Number(curr.hoursSpent) || 0), 0);
+  const totalCompletedHours = filteredTasks.filter(t => t.status === 'Concluído').reduce((acc, curr) => acc + (Number(curr.hoursSpent) || 0), 0);
+  const progressPercent = totalHours > 0 ? Math.round((totalCompletedHours / totalHours) * 100) : 0;
 
   const { filters } = useTaskContext();
   const pdfPeriod = useMemo(() => {
@@ -220,18 +222,22 @@ const DashboardView = () => {
         {/* Mini KPIs */}
         <div className="dash-panel" style={{ gridColumn: 'span 12', flexDirection: 'row', gap: '2rem', padding: '1rem 1.5rem', justifyContent: 'space-around' }}>
           <div style={{ textAlign: 'center' }}>
-          <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Total de Tarefas</div>
-          <div style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 'bold' }}>{totalTasks}</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Total de Tarefas</div>
+            <div style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 'bold' }}>{totalTasks}</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ color: 'var(--color-success)', fontSize: '0.875rem' }}>Tarefas Concluídas</div>
+            <div style={{ color: 'var(--color-success)', fontSize: '1.5rem', fontWeight: 'bold' }}>{totalCompleted}</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ color: 'var(--accent-primary)', fontSize: '0.875rem' }}>Estimativa Total</div>
+            <div style={{ color: 'var(--accent-primary)', fontSize: '1.5rem', fontWeight: 'bold' }}>{totalHours}h</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ color: 'var(--color-success)', fontSize: '0.875rem' }}>Horas Concluídas</div>
+            <div style={{ color: 'var(--color-success)', fontSize: '1.5rem', fontWeight: 'bold' }}>{totalCompletedHours}h</div>
+          </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ color: 'var(--color-success)', fontSize: '0.875rem' }}>Concluídas</div>
-          <div style={{ color: 'var(--color-success)', fontSize: '1.5rem', fontWeight: 'bold' }}>{totalCompleted}</div>
-        </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ color: 'var(--accent-primary)', fontSize: '0.875rem' }}>Horas Totais</div>
-          <div style={{ color: 'var(--accent-primary)', fontSize: '1.5rem', fontWeight: 'bold' }}>{totalHours}h</div>
-        </div>
-      </div>
 
       <div className="dash-panel" style={{ gridColumn: 'span 4' }}>
         <h3 className="dash-panel-title">
@@ -254,6 +260,35 @@ const DashboardView = () => {
         </h3>
         <div className="chart-container" style={{height: '300px'}}>
            <Bar data={contributionData} options={barOptions} plugins={barPlugins} />
+        </div>
+      </div>
+
+      <div className="dash-panel" style={{ gridColumn: 'span 12' }}>
+        <h3 className="dash-panel-title" style={{ marginBottom: '1rem' }}>
+          <ListIcon size={20} className="highlight" style={{color: 'var(--color-success)'}} />
+          Progresso do Projeto Atualizado
+        </h3>
+        <div style={{ width: '100%', backgroundColor: 'var(--bg-main)', borderRadius: '999px', height: '1.5rem', position: 'relative', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
+          <div 
+            style={{ 
+              width: `${progressPercent}%`, 
+              backgroundColor: 'var(--color-success)', 
+              height: '100%', 
+              transition: 'width 0.5s ease-in-out',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#000',
+              fontWeight: 'bold',
+              fontSize: '0.85rem'
+            }}
+          >
+            {progressPercent > 2 ? `${progressPercent}%` : ''}
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+          <span><strong>{totalCompletedHours}h</strong> Concluídas</span>
+          <span><strong>{totalHours}h</strong> Totais Estimadas</span>
         </div>
       </div>
 

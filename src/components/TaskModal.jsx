@@ -31,6 +31,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
   const [newComment, setNewComment] = useState('');
   const [commentAuthorId, setCommentAuthorId] = useState(users[0]?.id || '');
   const [originalData, setOriginalData] = useState(null);
+  const [isTagsOpen, setIsTagsOpen] = useState(false);
 
   // Populate data when editing
   useEffect(() => {
@@ -195,28 +196,38 @@ const TaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Horas Gastas</label>
-              <input type="number" min="0" step="0.5" className="form-input" name="hoursSpent" value={formData.hoursSpent} onChange={handleChange} />
-            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Estimativa de tempo</label>
+                <input type="number" min="0" step="0.5" className="form-input" name="hoursSpent" value={formData.hoursSpent} onChange={handleChange} />
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Tags da Tarefa</label>
-              <div className="tags-grid">
-                {tags.map(t => (
-                  <label key={t} className={`tag-checkbox-label ${formData.tags.includes(t) ? 'selected' : ''}`}>
-                    <input 
-                      type="checkbox" 
-                      className="hidden-checkbox"
-                      checked={formData.tags.includes(t)}
-                      onChange={(e) => {
-                        if (e.target.checked) setFormData(prev => ({ ...prev, tags: [...prev.tags, t] }));
-                        else setFormData(prev => ({ ...prev, tags: prev.tags.filter(tag => tag !== t) }));
-                      }}
-                    />
-                    {t}
-                  </label>
-                ))}
+              <div className="form-group" style={{ position: 'relative' }}>
+                <label className="form-label">Tags da Tarefa</label>
+                <div 
+                  className="form-input tags-dropdown-toggle" 
+                  onClick={() => setIsTagsOpen(!isTagsOpen)}
+                  style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', minHeight: '38px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
+                  {formData.tags?.length > 0 ? formData.tags.join(', ') : 'Selecione tags...'}
+                </div>
+                {isTagsOpen && (
+                  <div className="tags-dropdown-menu">
+                    {tags.map(t => (
+                      <label key={t} className="tags-dropdown-item">
+                        <input 
+                          type="checkbox" 
+                          checked={formData.tags.includes(t)}
+                          onChange={(e) => {
+                            if (e.target.checked) setFormData(prev => ({ ...prev, tags: [...prev.tags, t] }));
+                            else setFormData(prev => ({ ...prev, tags: prev.tags.filter(tag => tag !== t) }));
+                          }}
+                        />
+                        {t}
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
