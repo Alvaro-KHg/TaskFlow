@@ -1,22 +1,20 @@
 import { addDays, subDays } from 'date-fns';
 
 export const USERS = [
-  { id: 'u1', name: 'Alvaro', avatar: '/avatars/red.png' }, // Ranger Vermelho
-  { id: 'u2', name: 'Bruno', avatar: '/avatars/green.png' }, // Ranger Verde
-  { id: 'u3', name: 'Fernando', avatar: '/avatars/blue.png' }, // Ranger Azul
-  { id: 'u4', name: 'Kaique', avatar: '/avatars/black.png' }, // Ranger Preto
-  { id: 'u5', name: 'Borges', avatar: '/avatars/yellow.png' }, // Ranger Amarelo
-  { id: 'u6', name: 'Rafaela', avatar: '/avatars/pink.png' }, // Ranger Rosa
+  { id: 'u1', name: 'Alvaro', avatar: '/avatars/red.png' },
+  { id: 'u2', name: 'Anthony', avatar: '/avatars/green.png' },
+  { id: 'u3', name: 'Angelo', avatar: '/avatars/blue.png' },
+  { id: 'u4', name: 'Gabrieli', avatar: '/avatars/black.png' },
+  { id: 'u5', name: 'Luis Perez', avatar: '/avatars/yellow.png' },
+  { id: 'u6', name: 'Luiz Zavatini', avatar: '/avatars/pink.png' },
 ];
 
 export const SUBJECTS = [
-  'Captura de Dados na Web',
-  'Modelagem Matemática e Otimização',
-  'Data Warehouse',
-  'Projeto Integrador',
-  'Imagem Digital',
-  'Recuperação de Informação',
-  'Artigo Revista'
+  'Engenharia de software p/ CD',
+  'Segurança de dados e Ética',
+  'Aprendizado Não Supervisionado',
+  'Projeto Integrador III',
+  'MLOps'
 ];
 
 export const STATUSES = ['Backlog', 'A Fazer', 'Em Andamento', 'Bloqueado/Aguardando', 'Revisão', 'Concluído'];
@@ -34,7 +32,7 @@ export const INITIAL_TASKS = [
     id: 't1',
     title: 'Scraping de Dados',
     description: 'Criar script Python para extrair dados do portal público.',
-    subject: 'Captura de Dados na Web',
+    subject: 'Engenharia de software p/ CD',
     dueDate: addDays(now, 2).toISOString(),
     assigneeId: 'u1',
     status: 'Em Andamento',
@@ -47,7 +45,7 @@ export const INITIAL_TASKS = [
     id: 't2',
     title: 'Modelagem do Problema de Transporte',
     description: 'Resolver o problema de otimização usando simplex.',
-    subject: 'Modelagem Matemática e Otimização',
+    subject: 'Segurança de dados e Ética',
     dueDate: subDays(now, 1).toISOString(),
     assigneeId: 'u2',
     status: 'Concluído',
@@ -60,7 +58,7 @@ export const INITIAL_TASKS = [
     id: 't3',
     title: 'Estruturação Star Schema',
     description: 'Criar o modelo multidimensional para as vendas.',
-    subject: 'Data Warehouse',
+    subject: 'Aprendizado Não Supervisionado',
     dueDate: addDays(now, 5).toISOString(),
     assigneeId: 'u3',
     status: 'Bloqueado/Aguardando',
@@ -73,7 +71,7 @@ export const INITIAL_TASKS = [
     id: 't4',
     title: 'Especificação de Requisitos',
     description: 'Levantamento de requisitos do PI.',
-    subject: 'Projeto Integrador',
+    subject: 'Projeto Integrador III',
     dueDate: addDays(now, 1).toISOString(),
     assigneeId: 'u4',
     status: 'Revisão',
@@ -86,7 +84,7 @@ export const INITIAL_TASKS = [
     id: 't5',
     title: 'Filtros de Convolução',
     description: 'Aplicar filtros de Sobel e Canny nas imagens de teste.',
-    subject: 'Imagem Digital',
+    subject: 'MLOps',
     dueDate: addDays(now, 7).toISOString(),
     assigneeId: 'u5',
     status: 'A Fazer',
@@ -99,7 +97,7 @@ export const INITIAL_TASKS = [
     id: 't6',
     title: 'Implementar TF-IDF',
     description: 'Criar o índice invertido e calcular TF-IDF.',
-    subject: 'Recuperação de Informação',
+    subject: 'Engenharia de software p/ CD',
     dueDate: addDays(now, 3).toISOString(),
     assigneeId: 'u6',
     status: 'Em Andamento',
@@ -112,7 +110,7 @@ export const INITIAL_TASKS = [
     id: 't7',
     title: 'Revisão Bibliográfica',
     description: 'Ler os 10 artigos base e fazer o fichamento.',
-    subject: 'Artigo Revista',
+    subject: 'Segurança de dados e Ética',
     dueDate: addDays(now, 10).toISOString(),
     assigneeId: 'u1',
     status: 'A Fazer',
