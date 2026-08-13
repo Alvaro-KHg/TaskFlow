@@ -88,10 +88,15 @@ export const TaskProvider = ({ children }) => {
       'Recuperação de Informação',
       'Artigo Revista'
     ];
+    const materiasAntigasLimpo = materiasAntigas.map(m => m.trim().toLowerCase());
     
     const dbSubjects = tasks
       .map(t => t.subject)
-      .filter(s => s && s.trim() !== '' && s !== 'mode' && !materiasAntigas.includes(s));
+      .filter(s => {
+        if (!s || s.trim() === '' || s === 'mode') return false;
+        const sNormalizado = s.trim().toLowerCase();
+        return !materiasAntigasLimpo.includes(sNormalizado);
+      });
       
     return Array.from(new Set([...SUBJECTS, ...dbSubjects]));
   }, [tasks]);
