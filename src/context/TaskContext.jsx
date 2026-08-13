@@ -79,7 +79,20 @@ export const TaskProvider = ({ children }) => {
 
   // Derived state: Dynamic Subjects & Tags based on DB content
   const dynamicSubjects = useMemo(() => {
-    const dbSubjects = tasks.map(t => t.subject).filter(s => s && s.trim() !== '' && s !== 'mode');
+    const materiasAntigas = [
+      'Captura de Dados na Web',
+      'Modelagem Matemática e Otimização',
+      'Data Warehouse',
+      'Projeto Integrador',
+      'Imagem Digital',
+      'Recuperação de Informação',
+      'Artigo Revista'
+    ];
+    
+    const dbSubjects = tasks
+      .map(t => t.subject)
+      .filter(s => s && s.trim() !== '' && s !== 'mode' && !materiasAntigas.includes(s));
+      
     return Array.from(new Set([...SUBJECTS, ...dbSubjects]));
   }, [tasks]);
 
