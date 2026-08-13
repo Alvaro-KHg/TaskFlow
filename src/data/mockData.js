@@ -4,9 +4,9 @@ export const USERS = [
   { id: 'u1', name: 'Alvaro', avatar: '/avatars/red.png' },
   { id: 'u2', name: 'Anthony', avatar: '/avatars/green.png' },
   { id: 'u3', name: 'Angelo', avatar: '/avatars/blue.png' },
-  { id: 'u4', name: 'Gabrieli', avatar: '/avatars/black.png' },
+  { id: 'u4', name: 'Gabrieli', avatar: '/avatars/pink.png' },
   { id: 'u5', name: 'Luis Perez', avatar: '/avatars/yellow.png' },
-  { id: 'u6', name: 'Luiz Zavatini', avatar: '/avatars/pink.png' },
+  { id: 'u6', name: 'Luiz Zavatini', avatar: '/avatars/black.png' },
 ];
 
 export const SUBJECTS = [
